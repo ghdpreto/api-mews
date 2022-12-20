@@ -1,4 +1,4 @@
-const { query } = require('express');
+
 const express = require('express');
 const oracledb = require('oracledb');
 
@@ -18,7 +18,8 @@ async function getData(req, res) {
   try {
     // Conecte-se ao banco de dados
     connection = await oracledb.getConnection(dbConfig);
-    query = `SELECT 
+    
+    const sql = `SELECT 
     O.NR_ATENDIMENTO ATENDIMENTO,
     TASY.OBTER_DADOS_PF(O.CD_PESSOA_FISICA, 'I') DS_IDADE,
     O.CD_PESSOA_FISICA as CD_PESSOA_FISICA,
@@ -62,7 +63,7 @@ async function getData(req, res) {
     AND E.DT_ATUALIZACAO = (SELECT MAX(X.DT_ATUALIZACAO) FROM TASY.ESCALA_MEWS X WHERE X.NR_ATENDIMENTO = O.NR_ATENDIMENTO)
 ORDER BY 4, 3`
     // Execute a consulta SQL
-    const result = await connection.execute(query);
+    const result = await connection.execute(sql);
 
     // Obtenha os dados retornados pelo select
     const data = result.rows;
